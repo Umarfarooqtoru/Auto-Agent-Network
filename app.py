@@ -57,4 +57,4 @@ if st.sidebar.button("Export as Text"):
         for speaker, msg in history:
             export += f"{speaker}: {msg}\n"
     st.sidebar.download_button("Download Chat History", export, file_name="chat_history.txt")
-</VSCode.Cell>
+
