@@ -1,4 +1,3 @@
-<VSCode.Cell language="python">
 import streamlit as st
 from typing import List, Dict
 
