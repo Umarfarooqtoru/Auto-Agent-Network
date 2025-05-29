@@ -1,22 +1,47 @@
+# Auto-Agent Network AI App
 import streamlit as st
-from typing import List, Dict
+from typing import List
 
-# Placeholder agent logic (replace with real model inference in production)
+# Local, non-API placeholder agent logic
 class ProductManagerAgent:
     def breakdown_tasks(self, idea: str) -> List[str]:
-        return ["Define requirements", "Design UI", "Develop code"]
+        # Simple rule-based breakdown for demonstration
+        if not idea.strip():
+            return []
+        tasks = [
+            f"Define requirements for: {idea}",
+            f"Design UI for: {idea}",
+            f"Develop code for: {idea}"
+        ]
+        return tasks
 
 class DeveloperAgent:
     def generate_code(self, task: str) -> str:
-        return f"# Code for {task}\nprint('Executing {task}')"
+        # Simple code template based on the task
+        if 'requirements' in task.lower():
+            return f"# List requirements for the project\nrequirements = ['User authentication', 'Task management', 'Responsive UI']\nprint(requirements)"
+        elif 'design ui' in task.lower():
+            return f"# Pseudocode for UI design\nui_layout = 'Modern, clean layout with sidebar and main content area'\nprint(ui_layout)"
+        elif 'develop code' in task.lower():
+            return f"# Main application code structure\ndef main():\n    print('App started')\nmain()"
+        else:
+            return f"# Code for {task}\nprint('Executing {task}')"
 
 class DesignerAgent:
     def describe_ui(self, task: str) -> str:
-        return f"UI for {task}: Modern, clean layout."
+        # Simple UI description
+        if 'requirements' in task.lower():
+            return "UI not applicable for requirements."
+        elif 'design ui' in task.lower():
+            return "A modern interface with a sidebar for navigation and a main area for content. Use soft colors and clear typography."
+        elif 'develop code' in task.lower():
+            return "UI includes a dashboard, task list, and user profile section."
+        else:
+            return f"UI for {task}: Modern, clean layout."
     def generate_image(self, task: str) -> str:
+        # Placeholder for image generation
         return f"[Image for {task} would be generated here]"
 
-# Streamlit UI
 st.set_page_config(page_title="Auto-Agent Network AI App", layout="wide")
 st.title("Auto-Agent Network AI App")
 
