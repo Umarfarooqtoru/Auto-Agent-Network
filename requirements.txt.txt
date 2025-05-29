@@ -1,0 +1,8 @@
+streamlit
+transformers
+accelerate
+diffusers
+torch
+# If you're using a specific version of torchvision for torch, add it here e.g. torchvision
+# Pillow is usually a sub-dependency but can be added if specific version needed:
+# Pillow
