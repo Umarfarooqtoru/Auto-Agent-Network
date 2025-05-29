@@ -2,76 +2,69 @@
 import streamlit as st
 from typing import List
 
-# Local, non-API placeholder agent logic
-class ProductManagerAgent:
-    def breakdown_tasks(self, idea: str) -> List[str]:
-        # Simple rule-based breakdown for demonstration
-        if not idea.strip():
-            return []
+# Optional: Uncomment and install these if you want to use advanced agent frameworks
+# from crewai import Crew
+# import langgraph
+# import autogen
+# import langchain
+# import weaviate
+
+# Shared memory (could be replaced with LangChain/Weaviate in the future)
+if 'memory' not in st.session_state:
+    st.session_state['memory'] = {}
+
+# Agent classes
+class ProductManager:
+    def plan(self, idea):
         tasks = [
-            f"Define requirements for: {idea}",
+            f"Research the fintech market for: {idea}",
+            f"Define MVP features for: {idea}",
             f"Design UI for: {idea}",
-            f"Develop code for: {idea}"
+            f"Develop backend for: {idea}",
+            f"Create marketing plan for: {idea}"
         ]
+        st.session_state['memory']['tasks'] = tasks
         return tasks
 
-class DeveloperAgent:
-    def generate_code(self, task: str) -> str:
-        # Simple code template based on the task
-        if 'requirements' in task.lower():
-            return f"# List requirements for the project\nrequirements = ['User authentication', 'Task management', 'Responsive UI']\nprint(requirements)"
-        elif 'design ui' in task.lower():
-            return f"# Pseudocode for UI design\nui_layout = 'Modern, clean layout with sidebar and main content area'\nprint(ui_layout)"
-        elif 'develop code' in task.lower():
-            return f"# Main application code structure\ndef main():\n    print('App started')\nmain()"
-        else:
-            return f"# Code for {task}\nprint('Executing {task}')"
+class Engineer:
+    def code(self, task):
+        return f"# Python code for {task}\ndef main():\n    print('Working on: {task}')\nmain()"
 
-class DesignerAgent:
-    def describe_ui(self, task: str) -> str:
-        # Simple UI description
-        if 'requirements' in task.lower():
-            return "UI not applicable for requirements."
-        elif 'design ui' in task.lower():
-            return "A modern interface with a sidebar for navigation and a main area for content. Use soft colors and clear typography."
-        elif 'develop code' in task.lower():
-            return "UI includes a dashboard, task list, and user profile section."
-        else:
-            return f"UI for {task}: Modern, clean layout."
-    def generate_image(self, task: str) -> str:
-        # Placeholder for image generation
-        return f"[Image for {task} would be generated here]"
+class Designer:
+    def design(self, task):
+        return f"UI concept for {task}: Clean dashboard, charts, savings goals, and notifications."
+
+class Marketer:
+    def write_copy(self, task):
+        return f"Marketing copy for {task}: 'Start saving smarter with our new fintech tool!'"
 
 st.set_page_config(page_title="Auto-Agent Network AI App", layout="wide")
-st.title("Auto-Agent Network AI App")
+st.title("Auto-Agent Network: Self-Collaborating AI Agents")
 
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = { 'PM': [], 'Dev': [], 'Designer': [] }
+idea = st.text_area("Enter your startup idea:")
+run = st.button("Run AI Team")
 
-with st.sidebar:
-    st.header("Project Idea")
-    user_idea = st.text_area("Describe your project idea:")
-    run_pipeline = st.button("Run Full Pipeline")
+if run and idea:
+    pm = ProductManager()
+    engineer = Engineer()
+    designer = Designer()
+    marketer = Marketer()
 
-pm = ProductManagerAgent()
-dev = DeveloperAgent()
-designer = DesignerAgent()
-
-if run_pipeline and user_idea:
-    tasks = pm.breakdown_tasks(user_idea)
-    st.session_state['chat_history']['PM'].append(("User", user_idea))
-    st.session_state['chat_history']['PM'].append(("PM", f"Tasks: {tasks}"))
-    st.subheader("Pipeline Results")
+    st.subheader("AI Team Collaboration")
+    tasks = pm.plan(idea)
     for task in tasks:
-        code = dev.generate_code(task)
-        ui_desc = designer.describe_ui(task)
-        img = designer.generate_image(task)
-        st.session_state['chat_history']['Dev'].append(("Dev", code))
-        st.session_state['chat_history']['Designer'].append(("Designer", ui_desc))
         st.write(f"**Task:** {task}")
-        st.code(code, language="python")
-        st.write(f"**UI Description:** {ui_desc}")
-        st.write(img)
+        if "code" in task.lower() or "develop" in task.lower():
+            code = engineer.code(task)
+            st.code(code, language="python")
+        elif "design" in task.lower() or "ui" in task.lower():
+            ui = designer.design(task)
+            st.write(ui)
+        elif "market" in task.lower():
+            copy = marketer.write_copy(task)
+            st.write(copy)
+        else:
+            st.write("Planned by PM.")
         st.markdown("---")
 
 st.sidebar.header("Export Chat Histories")
